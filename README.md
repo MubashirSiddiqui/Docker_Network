@@ -20,7 +20,7 @@ docker run -d -p 4442-4444:4442-4444 --net grid --name selenium-hub selenium/hub
 
 How to run
 
-1. Create a Docker Network
+1. Create a Docker Network 
 docker network create grid
 
 2. Start the Hub using the created network
