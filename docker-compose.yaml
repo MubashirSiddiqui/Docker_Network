@@ -4,20 +4,20 @@ services:
     image: selenium/hub:latest
     container_name: selenium-hub
     ports:
-      - "4444:4444" # Exposes the Selenium Grid on port 4444
-    environment:
-      - GRID_MAX_SESSION=5 # Limit max sessions
-      - GRID_BROWSER_TIMEOUT=60
-      - GRID_TIMEOUT=30
+      - "4442:4442" # Exposes the Selenium Grid on port 4444
+      - "4443:4443"
+      - "4444:4444"
 
   chrome:
     image: selenium/node-chrome:latest
     container_name: chrome
+    shm_size: 2gb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PORT=4442
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_INSTANCES=2
       - SE_NODE_MAX_SESSIONS=5
     volumes:
@@ -28,29 +28,33 @@ services:
   firefox:
     image: selenium/node-firefox:latest
     container_name: firefox
+    shm_size: 2gb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PORT=4442
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_INSTANCES=2
       - SE_NODE_MAX_SESSIONS=5
     volumes:
-      - /dev/shm:/dev/shm # For Firefox performance
+      - /dev/shm:/dev/shm # For Chrome performance
     links:
       - selenium-hub
 
   edge:
     image: selenium/node-edge:latest
     container_name: edge
+    shm_size: 2gb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PORT=4442
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_INSTANCES=2
       - SE_NODE_MAX_SESSIONS=5
     volumes:
-      - /dev/shm:/dev/shm # For Edge performance
+      - /dev/shm:/dev/shm # For Chrome performance
     links:
       - selenium-hub
